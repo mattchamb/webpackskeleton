@@ -1,10 +1,17 @@
+var HtmlWebpackPlugin = require('html-webpack-plugin');
+
+var webpackDevServerPort = 9090;
+var publicPath = "http://localhost:" + webpackDevServerPort + "/";
+var bundleName = "bundle.js";
+
 module.exports = {
     entry: {
         app: ["./client/main.js"]
     },
     output: {
         path: "./build/public",
-        filename: "bundle.js"
+        publicPath: publicPath,
+        filename: bundleName
     },
 
     resolve: {
@@ -34,5 +41,16 @@ module.exports = {
                 loader: "style-loader!css-loader!autoprefixer-loader?browsers=last 2 version!less-loader"
             }
         ]
+    },
+
+    plugins: [new HtmlWebpackPlugin({
+        filename: 'index.html',
+        template: './client/index-template.html',
+        bundleLocation: publicPath + bundleName
+    })],
+
+    devServer: {
+        contentBase: "./build/public",
+        port: webpackDevServerPort
     }
 };
