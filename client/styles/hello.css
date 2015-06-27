@@ -1,0 +1,3 @@
+.css-hello:before {
+    content: 'Hello from CSS!';
+}

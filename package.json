@@ -1,0 +1,30 @@
+{
+  "name": "webpackskeleton",
+  "version": "1.0.0",
+  "description": "",
+  "main": "build/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "private": true,
+  "devDependencies": {
+    "autoprefixer-loader": "^2.0.0",
+    "awesome-typescript-loader": "^0.6.0-rc.5",
+    "babel-core": "^5.6.14",
+    "babel-loader": "^5.2.2",
+    "copy-loader": "^0.1.2",
+    "css-loader": "^0.15.1",
+    "file-loader": "^0.8.4",
+    "gulp": "^3.9.0",
+    "gulp-typescript": "^2.7.7",
+    "less": "^2.5.1",
+    "less-loader": "^2.2.0",
+    "merge2": "^0.3.5",
+    "node-libs-browser": "^0.5.2",
+    "style-loader": "^0.12.3",
+    "webpack": "^1.9.12",
+    "webpack-dev-server": "^1.9.0"
+  }
+}
