@@ -6,7 +6,7 @@ var bundleName = "bundle.js";
 
 module.exports = {
     entry: {
-        app: ["./client/main.js"]
+        app: "./client/main.js"
     },
     output: {
         path: "./build/public",
