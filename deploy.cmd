@@ -90,7 +90,7 @@ goto :EOF
 call :SelectNodeVersion
 
 IF EXIST "package.json" (
-  call :ExecuteCmd !NPM_CMD! install --production
+  call :ExecuteCmd !NPM_CMD! install
   IF !ERRORLEVEL! NEQ 0 goto error
 )
 
@@ -112,7 +112,7 @@ IF !ERRORLEVEL! NEQ 0 goto error
 :: Run  FAKE build script
 :: ----------------------
 
-packages\FAKE\tools\FAKE.exe build.fsx
+packages\FAKE\tools\FAKE.exe build.fsx --envvar "NodePath" "!NODE_EXE!"
 IF !ERRORLEVEL! NEQ 0 goto error
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
