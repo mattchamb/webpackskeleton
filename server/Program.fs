@@ -11,7 +11,6 @@ open Suave.Web
 open Suave.Types
 open System.Net
 
-
 let serveFiles = 
     GET >>= pathRegex ".*"
         >>= choose [
@@ -31,21 +30,32 @@ let app =
 
 [<EntryPoint>]
 let main argv = 
+    printfn "Command line arguments: %A" argv
+
     let port = 
-        if argv.Length = 1 then
-            printfn "Using port \"%s\""  argv.[0]
+        if argv.Length >= 1 then
+            printfn "Using port \"%s\"" argv.[0]
             let p, a = UInt16.TryParse argv.[0]
             if p then a
             else
                 printfn "Unable to parse port \"%s\", defaulting to port 3000"  argv.[0]
                 3000us
-        else 3000us
-    let contentPath = Some (Path.Combine(Environment.CurrentDirectory, "public"))
+        else 
+            printfn "Defaulting to port 3000"
+            3000us
+
+    let relativeContentPath = 
+        if argv.Length >= 2 then
+            argv.[1]
+        else
+            "public"
+
+    let contentPath = Some (Path.Combine(Environment.CurrentDirectory, relativeContentPath))
     let config = { 
         defaultConfig with
             homeFolder = contentPath;
             bindings = [ HttpBinding.mk HTTP IPAddress.Loopback port];
-            logger = Loggers.ConsoleWindowLogger (minLevel=LogLevel.Warn, colourise=true)
+            logger = Loggers.ConsoleWindowLogger (minLevel=LogLevel.Verbose, colourise=true)
     }
     startWebServer config  app
     0
