@@ -32,8 +32,13 @@ let app =
 [<EntryPoint>]
 let main argv = 
     let port = 
-        let p, a = UInt16.TryParse argv.[0]
-        if p then a
+        if argv.Length = 1 then
+            printfn "Using port \"%s\""  argv.[0]
+            let p, a = UInt16.TryParse argv.[0]
+            if p then a
+            else
+                printfn "Unable to parse port \"%s\", defaulting to port 3000"  argv.[0]
+                3000us
         else 3000us
     let contentPath = Some (Path.Combine(Environment.CurrentDirectory, "public"))
     let config = { 
