@@ -44,16 +44,15 @@ let main argv =
             printfn "Defaulting to port 3000"
             3000us
 
-    let relativeContentPath = 
+    let absoluteContentPath = 
         if argv.Length >= 2 then
-            argv.[1]
+            Some argv.[1]
         else
-            "public"
+            Some (Path.Combine(Environment.CurrentDirectory, "public"))
 
-    let contentPath = Some (Path.Combine(Environment.CurrentDirectory, relativeContentPath))
     let config = { 
         defaultConfig with
-            homeFolder = contentPath;
+            homeFolder = absoluteContentPath;
             bindings = [ HttpBinding.mk HTTP IPAddress.Loopback port];
             logger = Loggers.ConsoleWindowLogger (minLevel=LogLevel.Verbose, colourise=true)
     }
