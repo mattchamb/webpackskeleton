@@ -7,7 +7,7 @@
 open Fake
 
 let buildDir = "./build/Release"
-let serverProj = !! "server/Server.fsproj"
+let serverProj = !! "Server.sln"
 
 Target "Clean" (fun _ -> 
     CleanDirs [buildDir]
