@@ -1,6 +1,8 @@
 ﻿open System
 open System.IO
 
+open EdgeJs
+
 open Suave
 open Suave.Logging
 open Suave.Http
@@ -10,6 +12,16 @@ open Suave.Http.RequestErrors
 open Suave.Web
 open Suave.Types
 open System.Net
+
+let jsFunc<'TArg, 'TResult> code (arg: 'TArg) =
+    async {
+        let func = Edge.Func code
+        let boxedArg = box arg
+        let! result = Async.AwaitTask <| func.Invoke boxedArg
+        return result :?> 'TResult
+    }
+
+let test: int -> Async<int> = jsFunc "return function(x, cb) { cb(null, x * 2); }"
 
 let serveFiles = 
     GET >>= pathRegex ".*"
@@ -23,7 +35,10 @@ let serveFiles =
 let app = 
     choose [
         path "/api/hello" 
-            >>= GET >>= OK "Hello from F#";
+            >>= GET >>= (fun x -> async {
+                let! r = test 5;
+                return! OK (sprintf "The result is: %A" r) x
+            });
         serveFiles;
         NOT_FOUND "Found no handlers"
     ]
