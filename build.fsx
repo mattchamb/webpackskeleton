@@ -7,7 +7,7 @@
 open Fake
 
 let buildDir = "./build/Release"
-let serverProj = !! "Server.sln"
+let serverProj = !! "server/Server.fsproj"
 
 Target "Clean" (fun _ -> 
     CleanDirs [buildDir]
@@ -22,7 +22,7 @@ Target "BuildSite" (fun _ ->
 )
 
 Target "BuildServer" (fun _ ->
-    MSBuildRelease buildDir "Build" serverProj
+    MSBuildReleaseExt buildDir [("AzureFakeOverride", "true")] "Build" serverProj
         |> Log "AppBuild-Output: "
 )
 
