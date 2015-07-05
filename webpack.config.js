@@ -9,7 +9,7 @@ module.exports = {
         app: "./client/main.js"
     },
     output: {
-        path: "./build/public",
+        path: "./build/Debug/public",
         publicPath: publicPath,
         filename: bundleName
     },

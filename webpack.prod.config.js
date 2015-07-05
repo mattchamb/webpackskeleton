@@ -6,7 +6,7 @@ var bundleName = "bundle.js";
 
 module.exports = objectAssign(require('./webpack.config'), {
     output: {
-        path: "./build/public",
+        path: "./build/Release/public",
         filename: bundleName
     },
     plugins: [
