@@ -1,0 +1,13 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title></title>
+</head>
+<body>
+    <div id="content">@Model.prerenderedContent</div>
+    @foreach(var script in @Model.scriptLocations) {
+        <script src="@script"></script>
+    }
+</body>
+</html>

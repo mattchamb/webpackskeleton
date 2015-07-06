@@ -1,4 +1,3 @@
-var HtmlWebpackPlugin = require('html-webpack-plugin');
 var webpack = require('webpack');
 var objectAssign = require('object-assign');
 
@@ -10,11 +9,6 @@ module.exports = objectAssign(require('./webpack.config'), {
         filename: bundleName
     },
     plugins: [
-        new HtmlWebpackPlugin({
-            filename: 'index.html',
-            template: './client/index-template.html',
-            bundleLocation: bundleName
-        }),
         new webpack.optimize.UglifyJsPlugin({
             compress: {
                 warnings: false

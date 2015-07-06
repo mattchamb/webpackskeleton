@@ -12,6 +12,15 @@ open Suave.Http.RequestErrors
 open Suave.Web
 open Suave.Types
 open System.Net
+open Suave.Razor
+
+type TemplateModel = 
+    {prerenderedContent: string;
+    scriptLocations: string array}
+
+let defaultModel = {prerenderedContent=""; scriptLocations=[|"bundle.js"|]}
+
+let indexTemplate = razor<TemplateModel> "Index.cshtml"
 
 let jsFunc<'TArg, 'TResult> code (arg: 'TArg) =
     async {
@@ -27,9 +36,9 @@ let serveFiles =
     GET >>= pathRegex ".*"
         >>= choose [
             // Try serving the requested file
-            request(fun r -> Files.browseFileHome r.url.LocalPath);
+            request(fun r -> Files.browseFile (Path.Combine(Environment.CurrentDirectory, "public")) r.url.LocalPath);
             // Otherwise serve index.html so that the server works with html5 history api
-            request(fun r -> Files.browseFileHome "index.html");
+            request(fun r -> indexTemplate defaultModel);
         ]
 
 let app = 
@@ -63,7 +72,7 @@ let main argv =
         if argv.Length >= 2 then
             Some argv.[1]
         else
-            Some (Path.Combine(Environment.CurrentDirectory, "public"))
+            Some Environment.CurrentDirectory
 
     let config = { 
         defaultConfig with

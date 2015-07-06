@@ -1,5 +1,3 @@
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-
 var webpackDevServerPort = 9090;
 var publicPath = "http://localhost:" + webpackDevServerPort + "/";
 var bundleName = "bundle.js";
@@ -42,12 +40,6 @@ module.exports = {
             }
         ]
     },
-
-    plugins: [new HtmlWebpackPlugin({
-        filename: 'index.html',
-        template: './client/index-template.html',
-        bundleLocation: publicPath + bundleName
-    })],
 
     devServer: {
         contentBase: "./build/public",

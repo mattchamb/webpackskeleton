@@ -5,6 +5,13 @@ NUGET
     FAKE (3.35.5)
     FSharp.Core (3.1.2.1)
     FsPickler (1.2.10)
+    Microsoft.AspNet.Razor (3.2.3) - framework: >= net45
+    RazorEngine (3.7.0)
+      Microsoft.AspNet.Razor (>= 3.0.0) - framework: >= net45
+      Microsoft.AspNet.Razor (2.0.30506.0) - framework: >= net40 < net45
     Suave (0.29.1)
       FSharp.Core (>= 3.1.2.1)
       FsPickler (>= 1.2.5)
+    Suave.Razor (0.29.1)
+      RazorEngine (>= 3.7.0)
+      Suave (>= 0.29.1)
