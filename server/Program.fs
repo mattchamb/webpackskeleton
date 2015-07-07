@@ -46,6 +46,11 @@ let defaultModel =
 
 let indexTemplate = razor<TemplateModel> "Index.cshtml"
 
+let useEntryPoint (url: System.Uri) =
+    match url.LocalPath with
+    | "/" -> indexTemplate defaultModel
+    | _ -> indexTemplate defaultModel
+
 let jsFunc<'TArg, 'TResult> code (arg: 'TArg) =
     async {
         let func = Edge.Func code
@@ -63,7 +68,7 @@ let serveFiles =
             request(fun r -> Files.browseFile (Path.Combine(Environment.CurrentDirectory, "public")) r.url.LocalPath);
             path "/favicon.ico" >>= NOT_FOUND "File not found.";
             // Otherwise serve index.html so that the server works with html5 history api
-            request(fun r -> indexTemplate defaultModel);
+            request(fun r -> useEntryPoint r.url);
         ]
 
 let app = 

@@ -1,7 +1,5 @@
 import React from 'react';
-
-var Router = require('react-router');
-var {Route, RouteHandler, Link, DefaultRoute} = Router;
+import Router, {Route, RouteHandler, Link, DefaultRoute} from 'react-router';
 
 
 var About = React.createClass({
