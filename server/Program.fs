@@ -14,11 +14,35 @@ open Suave.Types
 open System.Net
 open Suave.Razor
 
+type StaticContent =
+    {scripts: string array;
+     styles: string array}
+
 type TemplateModel = 
     {prerenderedContent: string;
-    scriptLocations: string array}
+     staticContent: StaticContent}
 
-let defaultModel = {prerenderedContent=""; scriptLocations=[|"bundle.js"|]}
+let contentLocation =
+#if DEBUG
+    "http://localhost:9090/"
+#else
+    ""
+#endif
+
+let defaultModel = 
+    {
+        prerenderedContent = "";
+        staticContent = 
+        {
+            scripts = 
+                [|
+                    contentLocation + "commons.js";
+                    contentLocation + "main.js"
+                |];
+            styles = 
+                [|contentLocation + "main.css"|]
+        }
+    }
 
 let indexTemplate = razor<TemplateModel> "Index.cshtml"
 
@@ -37,6 +61,7 @@ let serveFiles =
         >>= choose [
             // Try serving the requested file
             request(fun r -> Files.browseFile (Path.Combine(Environment.CurrentDirectory, "public")) r.url.LocalPath);
+            path "/favicon.ico" >>= NOT_FOUND "File not found.";
             // Otherwise serve index.html so that the server works with html5 history api
             request(fun r -> indexTemplate defaultModel);
         ]

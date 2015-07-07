@@ -1,10 +1,13 @@
+var webpack = require('webpack');
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
+
 var webpackDevServerPort = 9090;
 var publicPath = "http://localhost:" + webpackDevServerPort + "/";
-var bundleName = "bundle.js";
+var bundleName = "[name].js";
 
 module.exports = {
     entry: {
-        app: "./client/main.js"
+        main: "./client/main.jsx"
     },
     output: {
         path: "./build/Debug/public",
@@ -17,7 +20,7 @@ module.exports = {
     },
 
     // Source maps support (or 'inline-source-map' also works)
-    devtool: 'source-map',
+    devtool: 'inline-source-map',
 
     module: {
         loaders: [
@@ -32,14 +35,19 @@ module.exports = {
             },
             {
                 test: /\.css$/,
-                loader: "style-loader!css-loader!autoprefixer-loader?browsers=last 2 version"
+                loader: ExtractTextPlugin.extract("style-loader", "css-loader!autoprefixer-loader?browsers=last 2 version")
             },
             {
                 test: /\.less$/,
-                loader: "style-loader!css-loader!autoprefixer-loader?browsers=last 2 version!less-loader"
+                loader: ExtractTextPlugin.extract("style-loader", "css-loader!autoprefixer-loader?browsers=last 2 version!less-loader")
             }
         ]
     },
+
+    plugins: [
+        new webpack.optimize.CommonsChunkPlugin("commons", "commons.js"),
+        new ExtractTextPlugin("[name].css")
+    ],
 
     devServer: {
         contentBase: "./build/public",

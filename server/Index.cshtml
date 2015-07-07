@@ -3,10 +3,14 @@
 <head>
     <meta charset="UTF-8" />
     <title></title>
+    
+    @foreach(var styles in @Model.staticContent.styles) {
+        <link href="@styles" type="text/css" rel="stylesheet" />
+    }
 </head>
 <body>
-    <div id="content">@Model.prerenderedContent</div>
-    @foreach(var script in @Model.scriptLocations) {
+    <div id="react-content">@Model.prerenderedContent</div>
+    @foreach(var script in @Model.staticContent.scripts) {
         <script src="@script"></script>
     }
 </body>
