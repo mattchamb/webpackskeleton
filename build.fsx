@@ -11,6 +11,7 @@ type BuildConfig = {outputDir: string; webpackConfig: string; releaseBuild: bool
 
 let serverProj = !!"./src/fs/ApiServer/ApiServer.fsproj"
 let jsDir = "./src/js"
+let binDir = "./bin/"
 let nodePath = environVarOrDefault "NodePath" "node"
 let npmPath = environVarOrDefault "NpmPath" @"c:\Program Files\nodejs\npm.cmd"
 
@@ -24,13 +25,19 @@ let exec proc wd args =
 let buildCfg =
     let releaseBuild = getEnvironmentVarAsBoolOrDefault "ReleaseBuild" false
     if releaseBuild then
-        { outputDir = "./bin/Release"
+        { outputDir = binDir @@ "/Release"
           webpackConfig = "webpack.prod.config.js"
           releaseBuild = releaseBuild }
     else 
-        { outputDir = "./bin/Debug"
+        { outputDir = binDir @@ "/Debug"
           webpackConfig = "webpack.config.js"
           releaseBuild = releaseBuild }
+
+
+Target "CleanAll" (fun _ -> 
+    CleanDir binDir
+    DeleteDir binDir
+)
 
 Target "Clean" (fun _ -> 
     CleanDir buildCfg.outputDir
