@@ -4,9 +4,10 @@ var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 module.exports = objectAssign(require('./webpack.config'), {
     output: {
-        path: "./build/Release/public",
+        path: "../../bin/Release/public",
         filename: "[name].js"
     },
+    devtool: 'source-map',
     plugins: [
         new webpack.DefinePlugin({
             "process.env": {

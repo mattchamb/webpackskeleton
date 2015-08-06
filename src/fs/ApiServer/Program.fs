@@ -51,22 +51,26 @@ let jsFunc<'TArg, 'TResult> code (arg : 'TArg) =
         return result :?> 'TResult
     }
 
-let test : int -> Async<int> = jsFunc "return function(x, cb) { cb(null, x * 2); }"
+let test : int -> Async<int> = jsFunc @"
+        return function(x, cb) { 
+            cb(null, x * 2); 
+        };
+    "
 
-let serveFiles = 
+let serveFiles dir = 
     GET >>= pathRegex ".*" >>= choose [ // Try serving the requested file
                                         request 
                                             (fun r -> 
-                                            Files.browseFile (Path.Combine(Environment.CurrentDirectory, "public")) 
+                                            Files.browseFile (Path.Combine(dir, "public")) 
                                                 r.url.LocalPath)
                                         path "/favicon.ico" >>= NOT_FOUND "File not found."
                                         // Otherwise serve index.html so that the server works with html5 history api
                                         request (fun r -> useEntryPoint r.url) ]
 
-let app = 
+let app dir = 
     choose [ path "/api/hello" >>= GET >>= (fun x -> async { let! r = test 5
                                                              return! OK (sprintf "The result is: %A" r) x })
-             serveFiles
+             serveFiles dir
              NOT_FOUND "Found no handlers" ]
 
 [<EntryPoint>]
@@ -85,13 +89,13 @@ let main argv =
             3000us
     
     let absoluteContentPath = 
-        if argv.Length >= 2 then Some argv.[1]
-        else Some Environment.CurrentDirectory
+        if argv.Length >= 2 then argv.[1]
+        else Environment.CurrentDirectory
     
     let config = 
-        { defaultConfig with homeFolder = absoluteContentPath
+        { defaultConfig with homeFolder = Some absoluteContentPath
                              bindings = [ HttpBinding.mk HTTP IPAddress.Loopback port ]
                              logger = Loggers.ConsoleWindowLogger(minLevel = LogLevel.Verbose, colourise = true) }
     
-    startWebServer config app
+    startWebServer config (app absoluteContentPath)
     0

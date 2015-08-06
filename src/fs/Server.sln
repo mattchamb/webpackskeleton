@@ -1,19 +1,20 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".paket", ".paket", "{A18D1386-308B-4451-BA43-38F6C0F85513}"
 	ProjectSection(SolutionItems) = preProject
 		paket.dependencies = paket.dependencies
+		paket.lock = paket.lock
 	EndProjectSection
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Server", "server\Server.fsproj", "{51552BE2-65A2-452C-81DF-3CB11776B036}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "ApiServer", "ApiServer\ApiServer.fsproj", "{51552BE2-65A2-452C-81DF-3CB11776B036}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{04A2136B-749C-45CC-A241-83BF2946742E}"
 	ProjectSection(SolutionItems) = preProject
-		.deployment = .deployment
-		build.fsx = build.fsx
-		deploy.cmd = deploy.cmd
+		..\..\.deployment = ..\..\.deployment
+		..\..\build.fsx = ..\..\build.fsx
+		..\..\deploy.cmd = ..\..\deploy.cmd
 		web.config = web.config
 	EndProjectSection
 EndProject

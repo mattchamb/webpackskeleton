@@ -10,7 +10,7 @@ module.exports = {
         main: "./client/main.jsx"
     },
     output: {
-        path: "./build/Debug/public",
+        path: "../../bin/Debug/public",
         publicPath: publicPath,
         filename: bundleName
     },
@@ -50,7 +50,7 @@ module.exports = {
     ],
 
     devServer: {
-        contentBase: "./build/public",
+        contentBase: "../../bin/Debug/public",
         port: webpackDevServerPort
     }
 };

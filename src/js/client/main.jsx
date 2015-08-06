@@ -1,6 +1,8 @@
 import React from 'react';
 import Router, {Route, RouteHandler, Link, DefaultRoute} from 'react-router';
 
+require('./styles/hello.css');
+require('./styles/hello.less');
 
 var About = React.createClass({
     render: function () {

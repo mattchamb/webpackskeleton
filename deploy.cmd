@@ -109,10 +109,10 @@ IF !ERRORLEVEL! NEQ 0 goto error
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-:: Run  FAKE build script
+:: Run FAKE build script
 :: ----------------------
 
-packages\FAKE\tools\FAKE.exe build.fsx --envvar "NodePath" "!NODE_EXE!"
+src\fs\packages\FAKE\tools\FAKE.exe build.fsx --envvar "NodePath" "!NODE_EXE!" --envvar "NpmPath" "!NPM_CMD!"
 IF !ERRORLEVEL! NEQ 0 goto error
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
