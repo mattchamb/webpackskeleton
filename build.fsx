@@ -10,8 +10,9 @@ open System.Diagnostics
 type BuildConfig = {outputDir: string; webpackConfig: string; releaseBuild: bool}
 
 let serverProj = !!"./src/fs/ApiServer/ApiServer.fsproj"
+let jsDir = "./src/js"
 let nodePath = environVarOrDefault "NodePath" "node"
-let npmPath = environVarOrDefault "NpmPath" "npm"
+let npmPath = environVarOrDefault "NpmPath" @"c:\Program Files\nodejs\npm.cmd"
 
 let exec proc wd args =
     let webpackArgs (pi: ProcessStartInfo) =
@@ -32,7 +33,7 @@ let buildCfg =
           releaseBuild = releaseBuild }
 
 Target "Clean" (fun _ -> 
-    CleanDirs [buildCfg.outputDir]
+    CleanDir buildCfg.outputDir
 )
 
 Target "BuildSiteAssets" (fun _ ->
@@ -50,17 +51,52 @@ Target "BuildApiServer" (fun _ ->
             |> Log "AppBuild-Output: "
 )
 
-Target "BuildPrerenderer" (fun _ -> 
-    ()
+let prerendererDir = buildCfg.outputDir @@ "prerenderer/"
+
+Target "InstallNpmPackages" (fun _ -> 
+    checkFileExists npmPath
+    if not <| exec npmPath prerendererDir "install --production" then
+        failwith "Failed to install prerenderer NPM packages"
 )
+
+Target "GulpBuild" (fun _ -> 
+    checkFileExists npmPath
+    if not <| exec nodePath jsDir "node_modules/gulp/bin/gulp.js" then
+        failwith "Gulp build failed"
+)
+
+Target "CopyPrerendererPackageJson" (fun _ -> 
+    let src = jsDir @@ "package.json"
+    ensureDirectory prerendererDir
+    CopyFile prerendererDir src
+)
+
+Target "CleanPrerenderer" (fun _ ->
+    CleanDir prerendererDir
+)
+
+Target "BuildPrerenderer" DoNothing
+Target "RebuildPrerenderer" DoNothing
+
+"CleanPrerenderer"
+    ==> "CopyPrerendererPackageJson"
+    ==> "InstallNpmPackages"
+    ==> "GulpBuild"
+    ==> "RebuildPrerenderer"
+
+"CopyPrerendererPackageJson"
+    ==> "InstallNpmPackages"
+    ==> "GulpBuild"
+    ==> "BuildPrerenderer"
+
+"CleanPrerenderer" ==> "Clean"
 
 Target "All" DoNothing
 
 "Clean" ==> "BuildSiteAssets"
 "Clean" ==> "BuildApiServer"
-"Clean" ==> "BuildPrerenderer"
 "BuildSiteAssets" ==> "All"
-"BuildPrerenderer" ==> "All"
+"RebuildPrerenderer" ==> "All"
 "BuildApiServer" ==> "All"
 
 RunTargetOrDefault "All"
