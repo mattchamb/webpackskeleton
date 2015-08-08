@@ -112,7 +112,7 @@ IF !ERRORLEVEL! NEQ 0 goto error
 :: Run FAKE build script
 :: ----------------------
 
-src\fs\packages\FAKE\tools\FAKE.exe build.fsx -ev "NodePath" "!NODE_EXE!" -ev "NpmPath" "!NPM_CMD!" -ef "ReleaseBuild"
+src\fs\packages\FAKE\tools\FAKE.exe build.fsx -ev "NodePath" "!NODE_EXE!" -ef "ReleaseBuild"
 IF !ERRORLEVEL! NEQ 0 goto error
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

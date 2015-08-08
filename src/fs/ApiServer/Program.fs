@@ -12,13 +12,9 @@ open Suave.Types
 open System.Net
 open Suave.Razor
 
-type StaticContent = 
-    { scripts : string array
-      styles : string array }
-
 type TemplateModel = 
     { prerenderedContent : string
-      staticContent : StaticContent }
+      scripts : string array }
 
 let contentLocation =
 #if DEBUG 
@@ -30,18 +26,11 @@ let contentLocation =
 
 let defaultModel = 
     { prerenderedContent = ""
-      staticContent = 
-          { scripts = 
-                [| contentLocation + "commons.js"
+      scripts = [| contentLocation + "commons.js"
                    contentLocation + "main.js" |]
-            styles = [| contentLocation + "main.css" |] } }
+    }
 
 let indexTemplate = razor<TemplateModel> "Index.cshtml"
-
-let useEntryPoint (url : System.Uri) = 
-    match url.LocalPath with
-    | "/" -> indexTemplate defaultModel
-    | _ -> indexTemplate defaultModel
 
 let jsFunc<'TArg, 'TResult> code (arg : 'TArg) = 
     async { 
@@ -51,27 +40,37 @@ let jsFunc<'TArg, 'TResult> code (arg : 'TArg) =
         return result :?> 'TResult
     }
 
-let test : int -> Async<int> = jsFunc @"
+let test : string -> Async<string> = jsFunc @"
+        var prerender = require('../prerenderer/server/PreRenderer');
         return function(x, cb) { 
-            cb(null, x * 2); 
+            try {
+                prerender(x, cb);
+            } catch(ex) {
+                cb(ex);
+            }
         };
     "
 
-let serveFiles dir = 
+let useEntryPoint (url : Uri) = 
+    let path = url.LocalPath
+    async {
+        let! r = test path
+        let model = {defaultModel with prerenderedContent = r}
+        return (fun x -> indexTemplate model <| x)
+    }
+
+let serveFiles publicDir = 
     GET >>= pathRegex ".*" >>= choose [ // Try serving the requested file
-                                        request 
-                                            (fun r -> 
-                                            Files.browseFile (Path.Combine(dir, "public")) 
-                                                r.url.LocalPath)
+                                        request (fun r -> Files.browseFile publicDir r.url.LocalPath)
                                         path "/favicon.ico" >>= NOT_FOUND "File not found."
                                         // Otherwise serve index.html so that the server works with html5 history api
-                                        request (fun r -> useEntryPoint r.url) ]
+                                        request (fun r -> Async.RunSynchronously (useEntryPoint r.url)) ]
 
 let app dir = 
-    choose [ path "/api/hello" >>= GET >>= (fun x -> async { let! r = test 5
-                                                             return! OK (sprintf "The result is: %A" r) x })
-             serveFiles dir
-             NOT_FOUND "Found no handlers" ]
+    choose [ 
+        path "/api/hello" >>= GET >>= OK "Hello"
+        serveFiles (Path.Combine(dir, "public")) 
+        NOT_FOUND "Found no handlers" ]
 
 [<EntryPoint>]
 let main argv = 

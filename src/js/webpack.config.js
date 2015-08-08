@@ -1,5 +1,4 @@
 var webpack = require('webpack');
-var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 var webpackDevServerPort = 9090;
 var publicPath = "http://localhost:" + webpackDevServerPort + "/";
@@ -35,18 +34,17 @@ module.exports = {
             },
             {
                 test: /\.css$/,
-                loader: ExtractTextPlugin.extract("style-loader", "css-loader!autoprefixer-loader?browsers=last 2 version")
+                loader: "style-loader!css-loader!autoprefixer-loader?browsers=last 2 version"
             },
             {
                 test: /\.less$/,
-                loader: ExtractTextPlugin.extract("style-loader", "css-loader!autoprefixer-loader?browsers=last 2 version!less-loader")
+                loader: "style-loader!css-loader!autoprefixer-loader?browsers=last 2 version!less-loader"
             }
         ]
     },
 
     plugins: [
-        new webpack.optimize.CommonsChunkPlugin("commons", "commons.js"),
-        new ExtractTextPlugin("[name].css")
+        new webpack.optimize.CommonsChunkPlugin("commons", "commons.js")
     ],
 
     devServer: {

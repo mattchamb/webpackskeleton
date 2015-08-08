@@ -68,7 +68,7 @@ Target "InstallNpmPackages" (fun _ ->
 
 Target "GulpBuild" (fun _ -> 
     checkFileExists npmPath
-    if not <| exec nodePath jsDir "node_modules/gulp/bin/gulp.js" then
+    if not <| exec nodePath jsDir "node_modules/gulp/bin/gulp.js a" then
         failwith "Gulp build failed"
 )
 
@@ -76,6 +76,11 @@ Target "CopyPrerendererPackageJson" (fun _ ->
     let src = jsDir @@ "package.json"
     ensureDirectory prerendererDir
     CopyFile prerendererDir src
+)
+
+Target "CopyGulpOutputs" (fun _ ->
+    let gulpOutputDir = jsDir @@ "server-bin"
+    XCopy gulpOutputDir prerendererDir
 )
 
 Target "CleanPrerenderer" (fun _ ->
@@ -89,11 +94,13 @@ Target "RebuildPrerenderer" DoNothing
     ==> "CopyPrerendererPackageJson"
     ==> "InstallNpmPackages"
     ==> "GulpBuild"
+    ==> "CopyGulpOutputs"
     ==> "RebuildPrerenderer"
 
 "CopyPrerendererPackageJson"
     ==> "InstallNpmPackages"
     ==> "GulpBuild"
+    ==> "CopyGulpOutputs"
     ==> "BuildPrerenderer"
 
 "CleanPrerenderer" ==> "Clean"

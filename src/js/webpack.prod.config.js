@@ -1,6 +1,5 @@
 var webpack = require('webpack');
 var objectAssign = require('object-assign');
-var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 module.exports = objectAssign(require('./webpack.config'), {
     output: {
@@ -21,7 +20,6 @@ module.exports = objectAssign(require('./webpack.config'), {
                 warnings: false
             }
         }),
-        new webpack.optimize.CommonsChunkPlugin("commons", "commons.js"),
-        new ExtractTextPlugin("[name].css")
+        new webpack.optimize.CommonsChunkPlugin("commons", "commons.js")
     ]
 });
