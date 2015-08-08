@@ -1,5 +1,6 @@
 import React from 'react';
 import Router, {Route, RouteHandler, Link, DefaultRoute} from 'react-router';
+import message from '../common/lib/hello';
 
 require('./styles/hello.css');
 require('./styles/hello.less');
@@ -22,6 +23,7 @@ var App = React.createClass({
         return (
             <div>
                 <h1>App</h1>
+                <h2>{message}</h2>
                 <ul>
                     <li><Link to="about">About</Link></li>
                     <li><Link to="inbox">Inbox</Link></li>
